@@ -1,0 +1,13 @@
+build/
+*.o
+*.a
+*.elf
+*.bin
+*.iso
+*.img
+
+.DS_Store
+*.dSYM/
+
+.vscode/
+.idea/
