@@ -21,12 +21,23 @@ static char lexer_peek(const Lexer* lexer){
 static char lexer_advance(Lexer* lexer){
     if (lexer_is_at_end(lexer)) return '\0';
 
+    char previous_char = '\0';
+
+    if (lexer->current > 0) {
+        previous_char = lexer->source[lexer->current - 1];
+    }
+
     char current_char = lexer_peek(lexer);
     lexer->current++;
 
-    if (current_char == '\n'){
+    if (current_char == '\r') {
         lexer->line++;
         lexer->column = 1;
+    } else if (current_char == '\n') {
+        if (previous_char != '\r') {
+            lexer->line++;
+            lexer->column = 1;
+        }
     } else {
         lexer->column++;
     }
@@ -66,13 +77,37 @@ Token lexer_next_token(Lexer *lexer){
                 lexer_advance(lexer);
             }
         }
-        else if (current_char == '+') {
-            token.type = TOKEN_PLUS;
-            lexer_advance(lexer);
-        }
-        else {
-            token.type = TOKEN_ERROR;
-            lexer_advance(lexer);
+        else { 
+            switch (current_char) {
+                case '+':
+                    token.type = TOKEN_PLUS;
+                    lexer_advance(lexer);
+                    break;
+                case '-':
+                    token.type = TOKEN_MINUS;
+                    lexer_advance(lexer);
+                    break;
+                case '/':
+                    token.type = TOKEN_SLASH;
+                    lexer_advance(lexer);
+                    break;
+                case '*':
+                    token.type = TOKEN_STAR;
+                    lexer_advance(lexer);
+                    break;
+                case '(':
+                    token.type = TOKEN_LEFT_PAREN;
+                    lexer_advance(lexer);
+                    break;
+                case ')':
+                    token.type = TOKEN_RIGHT_PAREN;
+                    lexer_advance(lexer);
+                    break;
+                default:
+                    token.type = TOKEN_ERROR;
+                    lexer_advance(lexer);
+                    break;
+            }
         }
 
         token.length = lexer->current - token.start;

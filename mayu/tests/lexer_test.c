@@ -34,7 +34,7 @@ static void test_arithmetic_expression(void)
     expect_token(&lexer, TOKEN_EOF, 8, 0, 1, 9);
 }
 
-static void test_multiline_expression(void)
+static void test_LF_expression(void)
 {
     const char source[] = "12\n+34";
 
@@ -45,6 +45,32 @@ static void test_multiline_expression(void)
     expect_token(&lexer, TOKEN_PLUS, 3, 1, 2, 1);
     expect_token(&lexer, TOKEN_INTEGER, 4, 2, 2, 2);
     expect_token(&lexer, TOKEN_EOF, 6, 0, 2, 4);
+}
+
+static void test_CR_expression(void)
+{
+    const char source[] = "12\r+34";
+
+    Lexer lexer;
+    lexer_init(&lexer, source, sizeof(source) - 1);
+
+    expect_token(&lexer, TOKEN_INTEGER, 0, 2, 1, 1);
+    expect_token(&lexer, TOKEN_PLUS, 3, 1, 2, 1);
+    expect_token(&lexer, TOKEN_INTEGER, 4, 2, 2, 2);
+    expect_token(&lexer, TOKEN_EOF, 6, 0, 2, 4);
+}
+
+static void test_CRLF_expression(void)
+{
+    const char source[] = "12\r\n+34";
+
+    Lexer lexer;
+    lexer_init(&lexer, source, sizeof(source) - 1);
+
+    expect_token(&lexer, TOKEN_INTEGER, 0, 2, 1, 1);
+    expect_token(&lexer, TOKEN_PLUS, 4, 1, 2, 1);
+    expect_token(&lexer, TOKEN_INTEGER, 5, 2, 2, 2);
+    expect_token(&lexer, TOKEN_EOF, 7, 0, 2, 4);
 }
 
 static void test_invalid_character_recovery(void)
@@ -92,12 +118,36 @@ static void test_repeated_eof(void)
     expect_token(&lexer, TOKEN_EOF, 1, 0, 1, 2);
 }
 
+static void test_all_operators(void)
+{
+    const char source[] = "(12 + 34) * 5 - 8 / 2";
+
+    Lexer lexer;
+    lexer_init(&lexer, source, sizeof(source) - 1);
+
+    expect_token(&lexer, TOKEN_LEFT_PAREN, 0, 1, 1, 1);
+    expect_token(&lexer, TOKEN_INTEGER, 1, 2, 1, 2);
+    expect_token(&lexer, TOKEN_PLUS, 4, 1, 1, 5);
+    expect_token(&lexer, TOKEN_INTEGER, 6, 2, 1, 7);
+    expect_token(&lexer, TOKEN_RIGHT_PAREN, 8, 1, 1, 9);
+    expect_token(&lexer, TOKEN_STAR, 10, 1, 1, 11);
+    expect_token(&lexer, TOKEN_INTEGER, 12, 1, 1, 13);
+    expect_token(&lexer, TOKEN_MINUS, 14, 1, 1, 15);
+    expect_token(&lexer, TOKEN_INTEGER, 16, 1, 1, 17);
+    expect_token(&lexer, TOKEN_SLASH, 18, 1, 1, 19);
+    expect_token(&lexer, TOKEN_INTEGER, 20, 1, 1, 21);
+    expect_token(&lexer, TOKEN_EOF, 21, 0, 1, 22);
+}
+
 void lexer_tests_run(void)
 {
     test_arithmetic_expression();
-    test_multiline_expression();
+    test_LF_expression();
+    test_CR_expression();
+    test_CRLF_expression();
     test_invalid_character_recovery();
     test_empty_source();
     test_whitespace_only_source();
     test_repeated_eof();
+    test_all_operators();
 }
