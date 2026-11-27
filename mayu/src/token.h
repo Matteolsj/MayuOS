@@ -6,6 +6,11 @@
 typedef enum {
     TOKEN_INTEGER,
     TOKEN_PLUS,
+    TOKEN_MINUS,
+    TOKEN_STAR,
+    TOKEN_SLASH,
+    TOKEN_LEFT_PAREN,
+    TOKEN_RIGHT_PAREN,
     TOKEN_EOF,
     TOKEN_ERROR
 } TokenType;
