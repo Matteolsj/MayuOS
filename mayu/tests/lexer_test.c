@@ -80,15 +80,24 @@ static void test_whitespace_only_source(void)
     expect_token(&lexer, TOKEN_EOF, 5, 0, 2, 1);
 }
 
-int main(void)
+static void test_repeated_eof(void)
+{
+    const char source[] = "1";
+
+    Lexer lexer;
+    lexer_init(&lexer, source, sizeof(source) - 1);
+
+    expect_token(&lexer, TOKEN_INTEGER, 0, 1, 1, 1);
+    expect_token(&lexer, TOKEN_EOF, 1, 0, 1, 2);
+    expect_token(&lexer, TOKEN_EOF, 1, 0, 1, 2);
+}
+
+void lexer_tests_run(void)
 {
     test_arithmetic_expression();
     test_multiline_expression();
     test_invalid_character_recovery();
     test_empty_source();
     test_whitespace_only_source();
-
-    printf("All lexer tests passed!\n");
-
-    return 0;
+    test_repeated_eof();
 }

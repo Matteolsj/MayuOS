@@ -7,7 +7,7 @@ CFLAGS := -std=c11 -Wall -Wextra -Wpedantic -g -O0
 BUILD_DIR := build
 
 MAYUC := $(BUILD_DIR)/mayuc
-TEST_RUNNER := $(BUILD_DIR)/lexer_tests
+TEST_RUNNER := $(BUILD_DIR)/mayu_tests
 
 MAYU_SOURCES := $(wildcard src/*.c)
 MAYU_HEADERS := $(wildcard src/*.h)
