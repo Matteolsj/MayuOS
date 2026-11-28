@@ -1,5 +1,4 @@
 #include <stdbool.h>
-#include <stdlib.h>
 #include "lexer.h"
 
 void lexer_init(Lexer *lexer, const char *source, size_t source_length){
@@ -130,6 +129,45 @@ Token lexer_next_token(Lexer *lexer) {
         }
 
         token.length = lexer->current - token.start;
+
+        if (token.type == TOKEN_IDENTIFIER){
+            switch (token.length)
+            {
+            case 2:
+                if (lexer->source[token.start] == 'i' 
+                    && lexer->source[token.start + 1] == 'f') {
+                        token.type = TOKEN_IF;
+                    }
+                break;
+            case 4:
+                if (lexer->source[token.start] == 'e'
+                    && lexer->source[token.start + 1] == 'l'
+                    && lexer->source[token.start + 2] == 's'
+                    && lexer->source[token.start + 3] == 'e') {
+                        token.type = TOKEN_ELSE;
+                    }
+                break;
+            case 5:
+                if (lexer->source[token.start] == 'w'
+                    && lexer->source[token.start + 1] == 'h'
+                    && lexer->source[token.start + 2] == 'i'
+                    && lexer->source[token.start + 3] == 'l'
+                    && lexer->source[token.start + 4] == 'e') {
+                        token.type = TOKEN_WHILE;
+                    }
+                break;
+            case 6:
+                if (lexer->source[token.start] == 'r'
+                    && lexer->source[token.start + 1] == 'e'
+                    && lexer->source[token.start + 2] == 't'
+                    && lexer->source[token.start + 3] == 'u'
+                    && lexer->source[token.start + 4] == 'r'
+                    && lexer->source[token.start + 5] == 'n') {
+                        token.type = TOKEN_RETURN;
+                    }
+                break;
+            }
+        }
     }
     return token;
 }
