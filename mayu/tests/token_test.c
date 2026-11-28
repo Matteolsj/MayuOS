@@ -12,6 +12,7 @@ void token_tests_run(void)
     assert(strcmp(token_type_name(TOKEN_SLASH), "SLASH") == 0);
     assert(strcmp(token_type_name(TOKEN_LEFT_PAREN), "LEFT_PAREN") == 0);
     assert(strcmp(token_type_name(TOKEN_RIGHT_PAREN), "RIGHT_PAREN") == 0);
+    assert(strcmp(token_type_name(TOKEN_IDENTIFIER), "IDENTIFIER") == 0);
     assert(strcmp(token_type_name(TOKEN_EOF), "EOF") == 0);
     assert(strcmp(token_type_name(TOKEN_ERROR), "ERROR") == 0);
 }
