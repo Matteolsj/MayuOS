@@ -139,6 +139,75 @@ static void test_all_operators(void)
     expect_token(&lexer, TOKEN_EOF, 21, 0, 1, 22);
 }
 
+static void test_simple_identifier(void)
+{
+    const char source[] = "counter";
+
+    Lexer lexer;
+    lexer_init(&lexer, source, sizeof(source) - 1);
+
+    expect_token(&lexer, TOKEN_IDENTIFIER, 0, 7, 1, 1);
+    expect_token(&lexer, TOKEN_EOF, 7, 0, 1, 8);
+}
+
+static void test_underscore_identifier(void)
+{
+    const char source[] = "_temp";
+
+    Lexer lexer;
+    lexer_init(&lexer, source, sizeof(source) - 1);
+
+    expect_token(&lexer, TOKEN_IDENTIFIER, 0, 5, 1, 1);
+    expect_token(&lexer, TOKEN_EOF, 5, 0, 1, 6);
+}
+
+static void test_alphanumeric_identifier(void)
+{
+    const char source[] = "value42";
+
+    Lexer lexer;
+    lexer_init(&lexer, source, sizeof(source) - 1);
+
+    expect_token(&lexer, TOKEN_IDENTIFIER, 0, 7, 1, 1);
+    expect_token(&lexer, TOKEN_EOF, 7, 0, 1, 8);
+}
+
+static void test_identifier_with_underscore(void)
+{
+    const char source[] = "abc_def";
+
+    Lexer lexer;
+    lexer_init(&lexer, source, sizeof(source) - 1);
+
+    expect_token(&lexer, TOKEN_IDENTIFIER, 0, 7, 1, 1);
+    expect_token(&lexer, TOKEN_EOF, 7, 0, 1, 8);
+}
+
+static void test_identifier_with_operator(void)
+{
+    const char source[] = "counter+10";
+
+    Lexer lexer;
+    lexer_init(&lexer, source, sizeof(source) - 1);
+
+    expect_token(&lexer, TOKEN_IDENTIFIER, 0, 7, 1, 1);
+    expect_token(&lexer, TOKEN_PLUS, 7, 1, 1, 8);
+    expect_token(&lexer, TOKEN_INTEGER, 8, 2, 1, 9);
+    expect_token(&lexer, TOKEN_EOF, 10, 0, 1, 11);
+}
+
+static void test_integer_followed_by_identifier(void)
+{
+    const char source[] = "42value";
+
+    Lexer lexer;
+    lexer_init(&lexer, source, sizeof(source) - 1);
+
+    expect_token(&lexer, TOKEN_INTEGER, 0, 2, 1, 1);
+    expect_token(&lexer, TOKEN_IDENTIFIER, 2, 5, 1, 3);
+    expect_token(&lexer, TOKEN_EOF, 7, 0, 1, 8);
+}
+
 void lexer_tests_run(void)
 {
     test_arithmetic_expression();
@@ -150,4 +219,10 @@ void lexer_tests_run(void)
     test_whitespace_only_source();
     test_repeated_eof();
     test_all_operators();
+    test_simple_identifier();
+    test_underscore_identifier();
+    test_alphanumeric_identifier();
+    test_identifier_with_underscore();
+    test_identifier_with_operator();
+    test_integer_followed_by_identifier();
 }

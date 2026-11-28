@@ -14,6 +14,14 @@ static bool lexer_is_at_end(const Lexer* lexer){
     return lexer->current >= lexer->source_length;
 }
 
+static bool lexer_is_alpha(char c){
+    return ('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z');
+}
+
+static bool lexer_is_alphanumeric(char c){
+    return lexer_is_alpha(c) || ('0' <= c && c <= '9');
+}
+
 static char lexer_peek(const Lexer* lexer){
     return lexer->source[lexer->current];
 }
@@ -45,7 +53,7 @@ static char lexer_advance(Lexer* lexer){
     return current_char;
 }
 
-Token lexer_next_token(Lexer *lexer){
+Token lexer_next_token(Lexer *lexer) {
     while (!lexer_is_at_end(lexer)) {
         char current_char = lexer_peek(lexer);
 
@@ -58,7 +66,7 @@ Token lexer_next_token(Lexer *lexer){
 
     Token token;
 
-    if (lexer_is_at_end(lexer)){
+    if (lexer_is_at_end(lexer)) {
         token.type = TOKEN_EOF;
         token.length = 0;
         token.column = lexer->column;
@@ -71,7 +79,18 @@ Token lexer_next_token(Lexer *lexer){
 
         char current_char = lexer_peek(lexer);
 
-        if (current_char >= '0' && current_char <= '9') {
+        if (lexer_is_alpha(current_char) || current_char == '_') {
+            token.type = TOKEN_IDENTIFIER;
+            while (!lexer_is_at_end(lexer)) {
+                char c = lexer_peek(lexer);
+
+                if (lexer_is_alphanumeric(c) || c == '_') {
+                    lexer_advance(lexer);
+                } else {
+                    break;
+                }
+            }
+        } else if (current_char >= '0' && current_char <= '9') {
             token.type = TOKEN_INTEGER;
             while (!lexer_is_at_end(lexer) && lexer_peek(lexer) >= '0' && lexer_peek(lexer) <= '9') {
                 lexer_advance(lexer);

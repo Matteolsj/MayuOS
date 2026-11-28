@@ -21,6 +21,8 @@ const char* token_type_name(TokenType type){
         return "LEFT_PAREN";
     case TOKEN_RIGHT_PAREN:
         return "RIGHT_PAREN";
+    case TOKEN_IDENTIFIER:
+        return "IDENTIFIER";
     }
     return "UNKNOWN";
 }
