@@ -13,7 +13,11 @@ typedef enum {
     TOKEN_RIGHT_PAREN,
     TOKEN_EOF,
     TOKEN_IDENTIFIER,
-    TOKEN_ERROR
+    TOKEN_ERROR,
+    TOKEN_IF,
+    TOKEN_ELSE,
+    TOKEN_WHILE,
+    TOKEN_RETURN
 } TokenType;
 
 typedef struct {

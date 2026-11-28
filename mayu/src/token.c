@@ -23,6 +23,14 @@ const char* token_type_name(TokenType type){
         return "RIGHT_PAREN";
     case TOKEN_IDENTIFIER:
         return "IDENTIFIER";
+    case TOKEN_IF:
+        return "IF";
+    case TOKEN_ELSE:
+        return "ELSE";
+    case TOKEN_WHILE:
+        return "WHILE";
+    case TOKEN_RETURN:
+        return "RETURN";
     }
     return "UNKNOWN";
 }

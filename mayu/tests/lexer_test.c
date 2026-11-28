@@ -208,6 +208,63 @@ static void test_integer_followed_by_identifier(void)
     expect_token(&lexer, TOKEN_EOF, 7, 0, 1, 8);
 }
 
+static void test_keyword_recognition(void)
+{
+    const char source[] = "if else while return";
+
+    Lexer lexer;
+    lexer_init(&lexer, source, sizeof(source) - 1);
+
+    expect_token(&lexer, TOKEN_IF, 0, 2, 1, 1);
+    expect_token(&lexer, TOKEN_ELSE, 3, 4, 1, 4);
+    expect_token(&lexer, TOKEN_WHILE, 8, 5, 1, 9);
+    expect_token(&lexer, TOKEN_RETURN, 14, 6, 1, 15);
+    expect_token(&lexer, TOKEN_EOF, 20, 0, 1, 21);
+}
+
+static void test_keyword_prefixes_and_case(void)
+{
+    const char source[] = "ifCounter if2 returnValue IF";
+
+    Lexer lexer;
+    lexer_init(&lexer, source, sizeof(source) - 1);
+
+    expect_token(&lexer, TOKEN_IDENTIFIER, 0, 9, 1, 1);
+    expect_token(&lexer, TOKEN_IDENTIFIER, 10, 3, 1, 11);
+    expect_token(&lexer, TOKEN_IDENTIFIER, 14, 11, 1, 15);
+    expect_token(&lexer, TOKEN_IDENTIFIER, 26, 2, 1, 27);
+    expect_token(&lexer, TOKEN_EOF, 28, 0, 1, 29);
+}
+
+static void test_keyword_without_whitespace(void)
+{
+    const char source[] = "if+while";
+
+    Lexer lexer;
+    lexer_init(&lexer, source, sizeof(source) - 1);
+
+    expect_token(&lexer, TOKEN_IF, 0, 2, 1, 1);
+    expect_token(&lexer, TOKEN_PLUS, 2, 1, 1, 3);
+    expect_token(&lexer, TOKEN_WHILE, 3, 5, 1, 4);
+    expect_token(&lexer, TOKEN_EOF, 8, 0, 1, 9);
+}
+
+static void test_underscore_edge_cases(void)
+{
+    const char source[] = "_ __ foo_ _42 a__b if_";
+
+    Lexer lexer;
+    lexer_init(&lexer, source, sizeof(source) - 1);
+
+    expect_token(&lexer, TOKEN_IDENTIFIER, 0, 1, 1, 1);
+    expect_token(&lexer, TOKEN_IDENTIFIER, 2, 2, 1, 3);
+    expect_token(&lexer, TOKEN_IDENTIFIER, 5, 4, 1, 6);
+    expect_token(&lexer, TOKEN_IDENTIFIER, 10, 3, 1, 11);
+    expect_token(&lexer, TOKEN_IDENTIFIER, 14, 4, 1, 15);
+    expect_token(&lexer, TOKEN_IDENTIFIER, 19, 3, 1, 20);
+    expect_token(&lexer, TOKEN_EOF, 22, 0, 1, 23);
+}
+
 void lexer_tests_run(void)
 {
     test_arithmetic_expression();
@@ -225,4 +282,8 @@ void lexer_tests_run(void)
     test_identifier_with_underscore();
     test_identifier_with_operator();
     test_integer_followed_by_identifier();
+    test_keyword_recognition();
+    test_keyword_prefixes_and_case();
+    test_keyword_without_whitespace();
+    test_underscore_edge_cases();
 }
